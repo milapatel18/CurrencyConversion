@@ -1,0 +1,51 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><title>Home Page</title></head>
+<script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous"></script>
+<body>
+<h1>Hello !</h1>
+<p>Welcome to <span th:text="${appName}">Our App</span></p>
+<br/>
+<hr/>
+<br/>
+<table>
+    <tr>
+        <td>FROM CURRENCY : </td>
+        <td>
+            <select id="fromCurrencyDropDownList">
+                <option th:each="entry : ${currencyMap.entrySet()}" th:value="${entry.key}" th:text="${entry.value}">
+            </select>
+        </td>
+        <td><input type="number" name="fromAmount" id="fromAmount" placeholder="From Amount"></td>
+    </tr>
+    <tr>
+        <td>TO CURRENCY : </td>
+        <td>
+            <select id="toCurrencyDropDownList">
+                <option th:each="entry : ${currencyMap.entrySet()}" th:value="${entry.key}" th:text="${entry.value}">
+            </select>
+        </td>
+        <td><input type="number" readonly name="toAmount" id="toAmount" placeholder="0"></td>
+    </tr>
+</table>
+<input type="button" id="submitData" name="submitData" value="Calculate">
+<label id="messageLabel"></label>
+<script>
+    $( "#submitData" ).on( "click", function( event ) {
+        var fromC=$("#fromCurrencyDropDownList").val();
+        var toC=$("#toCurrencyDropDownList").val();
+        var amount=$("#fromAmount").val();
+        $.ajax({
+          url: "/currency/"+fromC+"/"+toC+"/"+amount,
+          success: function( result ) {
+            $("#toAmount").val(result.totalAmount);
+            $("#messageLabel").text("From "+$("#fromCurrencyDropDownList  option:selected").text()+" to "
+                        +$("#toCurrencyDropDownList  option:selected").text()+ " conversion rate is : "+ result.latestRate );
+          }
+        });
+    });
+</script>
+</body>
+</html>
